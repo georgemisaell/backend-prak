@@ -49,7 +49,6 @@ func SetupRoutes(app *fiber.App, db *sql.DB) {
 		return services.SoftDeleteAlumniService(c, db, id)
 	})
 
-
 	// --- Grup Rute Pekerjaan ---
 	pekerjaanGroup := protected.Group("/pekerjaan") 
 	// GET /pekerjaan
@@ -70,10 +69,26 @@ func SetupRoutes(app *fiber.App, db *sql.DB) {
 		id := c.Params("id")
 		return services.UpdatePekerjaanService(c, db, id)
 	})
-	// DELETE /pekerjaan/:id
+	// DELETE /pekerjaan/:id (SoftDelete)
 	pekerjaanGroup.Delete("/:id", middleware.AdminOnly(), func(c *fiber.Ctx) error {
 		id := c.Params("id")
 		return services.SoftDeletePekerjaanService(c, db, id)
+	})
+
+	// --- Trash ---
+	trashed := protected.Group("/trash")
+    trashed.Get("/", func(c *fiber.Ctx) error {
+		return services.GetAllTrashService(c, db)
+	})
+
+	trashed.Put("/:id", middleware.AdminOnly(), func(c *fiber.Ctx) error {
+		id := c.Params("id")
+		return services.UpdateTrashService(c, db, id)
+	})
+
+	trashed.Delete("/:id", middleware.AdminOnly(), func(c *fiber.Ctx) error {
+		id := c.Params("id")
+		return services.DeleteTrashService(c, db, id)
 	})
 }
 

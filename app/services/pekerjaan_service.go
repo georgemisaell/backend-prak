@@ -164,13 +164,39 @@ func SoftDeletePekerjaanService(c *fiber.Ctx, db *sql.DB, id string) error {
 	log.Printf("Admin %s menghapus alumni ID %d", username, pekerjaanID)
 
 	var pekerjaan models.Pekerjaan
+
+	DeletedPekerjaan, err := repository.SoftDeletePekerjaan(db, pekerjaan , id)
+	if err == sql.ErrNoRows {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"pesan": "data pekerjaan dengan ID " + id + " tidak ditemukan",
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+        "pesan": "Data pekerjaan berhasil dihapus",
+        "data_dihapus": DeletedPekerjaan,
+    })
+}
+
+func DeletePekerjaanService(c *fiber.Ctx, db *sql.DB, id string) error {
+	username := c.Locals("username").(string) 
+    pekerjaanID, err := strconv.Atoi(id) 
+    if err != nil { 
+        return c.Status(400).JSON(fiber.Map{ 
+            "error": "ID tidak valid", 
+        }) 
+    } 
+
+	log.Printf("Admin %s menghapus alumni ID %d", username, pekerjaanID)
+
+	var pekerjaan models.Pekerjaan
 	if err := c.BodyParser(&pekerjaan); err != nil{
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error" : err,
 		})
 	}
 
-	DeletedPekerjaan, err := repository.SoftDeletePekerjaan(db, pekerjaan , id)
+	DeletedPekerjaan, err := repository.DeletePekerjaan(db, pekerjaan , id)
 	if err == sql.ErrNoRows {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"pesan": "data pekerjaan dengan ID " + id + " tidak ditemukan",

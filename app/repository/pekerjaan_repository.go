@@ -72,7 +72,7 @@ func GetAllPekerjaan(search, sortBy, order string, limit, offset int, db *sql.DB
 // CountUsersRepo -> hitung total data untuk pagination  FOR PAGINATION
 func CountPekerjaanRepo(search string, db *sql.DB) (int, error) { 
     var total int 
-    countQuery := `SELECT COUNT(*) FROM alumni WHERE nim ILIKE $1 OR nama ILIKE $1` 
+    countQuery := `SELECT COUNT(*) FROM alumni WHERE nama_perusahaan ILIKE $1 OR bidang_industri ILIKE $1` 
     err := db.QueryRow(countQuery, "%"+search+"%").Scan(&total) 
     if err != nil && err != sql.ErrNoRows { 
         return 0, err 
@@ -263,8 +263,7 @@ func SoftDeletePekerjaan(db *sql.DB, pekerjaan models.Pekerjaan, id string) (mod
 		&pekerjaan.StatusPekerjaan,
 		&pekerjaan.DeskripsiPekerjaan,
 		&pekerjaan.CreatedAt,
-		&pekerjaan.UpdatedAt,
-        // Tambahkan DeletedAt di sini
+		&pekerjaan.UpdatedAt,        
 		&pekerjaan.DeletedAt,
 	)
 
