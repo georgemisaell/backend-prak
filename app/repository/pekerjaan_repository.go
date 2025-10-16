@@ -6,10 +6,10 @@ import (
 	"latihan_uts_2/app/models"
 )
 
-func GetAllPekerjaan(db *sql.DB)([]models.Pekerjaan, error){
+func GetAllPekerjaan(search, sortBy, order string, limit, offset int, db *sql.DB)([]models.Pekerjaan, error){
 	var pekerjaan []models.Pekerjaan
 
-	query := `
+	query := fmt.Sprintf(`
 		SELECT 
 			id,
 			alumni_id,
@@ -25,9 +25,12 @@ func GetAllPekerjaan(db *sql.DB)([]models.Pekerjaan, error){
 			created_at,
 			updated_at
 		FROM pekerjaan_alumni
-	`
+		WHERE nama_perusahaan ILIKE $1 OR bidang_industri ILIKE $1
+		ORDER BY %s %s
+		LIMIT $2 OFFSET $3
+	`, sortBy, order)
 
-	rows, err := db.Query(query)
+	rows, err := db.Query(query,  "%"+search+"%", limit, offset)
 	if err != nil {
 		fmt.Println("Gagal mengambil seluruh pekerjaan alumni")
 	}
@@ -65,6 +68,17 @@ func GetAllPekerjaan(db *sql.DB)([]models.Pekerjaan, error){
 	return pekerjaan, err
 
 }
+
+// CountUsersRepo -> hitung total data untuk pagination  FOR PAGINATION
+func CountPekerjaanRepo(search string, db *sql.DB) (int, error) { 
+    var total int 
+    countQuery := `SELECT COUNT(*) FROM alumni WHERE nim ILIKE $1 OR nama ILIKE $1` 
+    err := db.QueryRow(countQuery, "%"+search+"%").Scan(&total) 
+    if err != nil && err != sql.ErrNoRows { 
+        return 0, err 
+    } 
+    return total, nil 
+} 
 
 func GetPekerjaanByID(db *sql.DB, id string)(models.Pekerjaan, error){
 	query := `

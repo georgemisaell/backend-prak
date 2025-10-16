@@ -13,7 +13,7 @@ type Pekerjaan struct {
 	LokasiKerja       string `json:"lokasi_kerja"`
 	GajiRange         string `json:"gaji_range"`
 	TanggalMulaiKerja time.Time `json:"tanggal_mulai_kerja"`
-	TanggalSelesaiKerja time.Time `json:"tanggal_selesai_kerja"`
+	TanggalSelesaiKerja *time.Time `json:"tanggal_selesai_kerja"`
 	StatusPekerjaan string `json:"status_pekerjaan"`
 	DeskripsiPekerjaan *string `json:"deskripsi_pekerjaan"`
 	CreatedAt time.Time `json:"created_at"`
@@ -43,3 +43,8 @@ type UpdatePekerjaan struct{
 	TanggalMulaiKerja time.Time `json:"tanggal_mulai_kerja"`
 	TanggalSelesaiKerja time.Time `json:"tanggal_selesai_kerja"`
 }
+
+type PekerjaanResponse struct { 
+    Data []Pekerjaan   `json:"data"` 
+    Meta MetaInfo `json:"meta"` 
+} 

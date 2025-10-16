@@ -7,6 +7,7 @@ import (
 	"latihan_uts_2/app/repository"
 	"log"
 	"strconv"
+	"strings"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -16,7 +17,30 @@ func GetAllPekerjaanService(c *fiber.Ctx, db *sql.DB) error {
     username := c.Locals("username").(string) 
     log.Printf("User %s mengakses GET /api/pekerjaan", username)
 
-	pekerjaan, err := repository.GetAllPekerjaan(db)
+	// Pagination
+	page, _ := strconv.Atoi(c.Query("page", "1")) 
+    limit, _ := strconv.Atoi(c.Query("limit", "10")) 
+    sortBy := c.Query("sortBy", "id") 
+    order := c.Query("order", "asc") 
+    search := c.Query("search", "") 
+	offset := (page - 1) * limit
+
+	// Validasi input 
+    sortByWhitelist := map[string]bool{"id": true, "nama_perusahaan": true, "bidang_industri": true, "created_at": true} 
+    if !sortByWhitelist[sortBy] { 
+        sortBy = "id" 
+    } 
+    if strings.ToLower(order) != "desc" { 
+        order = "asc" 
+    }
+
+	 
+    total, err := repository.CountPekerjaanRepo(search, db) 
+    if err != nil { 
+        return c.Status(500).JSON(fiber.Map{"error": "Failed to count alumni"}) 
+    }
+
+	pekerjaan, err := repository.GetAllPekerjaan(search, sortBy, order, limit, offset, db)
 		if err == sql.ErrNoRows{
 			return	c.Status(fiber.StatusOK).JSON(fiber.Map{
 				"message":"Data Pekerjaan tidak ditemukan",
@@ -25,7 +49,21 @@ func GetAllPekerjaanService(c *fiber.Ctx, db *sql.DB) error {
 			})
 		}
 
-	return c.Status(fiber.StatusOK).JSON(pekerjaan)
+		// Buat response pakai model 
+    response := models.PekerjaanResponse{ 
+        Data: pekerjaan,
+        Meta: models.MetaInfo{ 
+            Page:   page, 
+            Limit:  limit, 
+            Total:  total, 
+            Pages:  (total + limit - 1) / limit, 
+            SortBy: sortBy, 
+            Order:  order, 
+            Search: search, 
+        }, 
+    } 
+	
+	return c.JSON(response)
 }
 
 func GetPekerjaanByIDService(c *fiber.Ctx, db *sql.DB, id string) error {
