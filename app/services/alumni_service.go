@@ -182,7 +182,7 @@ func UpdateAlumniService(c *fiber.Ctx, db *sql.DB, id string) error{
     })
 }
 
-func DeleteAlumniService(c *fiber.Ctx, db *sql.DB, id string) error{
+func SoftDeleteAlumniService(c *fiber.Ctx, db *sql.DB, id string) error{
 	username := c.Locals("username").(string) 
     alumniID, err := strconv.Atoi(id) 
     if err != nil { 
@@ -193,7 +193,7 @@ func DeleteAlumniService(c *fiber.Ctx, db *sql.DB, id string) error{
 
 	log.Printf("Admin %s menghapus alumni ID %d", username, alumniID)
 
-	alumni, err := repository.DeleteAlumni(db, id)
+	alumni, err := repository.SoftDeleteAlumni(db, id)
 	if err != nil {
 		if err == sql.ErrNoRows{
 			return	c.Status(fiber.StatusOK).JSON(fiber.Map{

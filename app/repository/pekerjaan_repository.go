@@ -240,3 +240,40 @@ func DeletePekerjaan(db *sql.DB, pekerjaan models.Pekerjaan, id string) (models.
 
 	return pekerjaan, err
 }
+
+func SoftDeletePekerjaan(db *sql.DB, pekerjaan models.Pekerjaan, id string) (models.Pekerjaan, error) {
+
+	query := `
+		UPDATE pekerjaan_alumni
+		SET deleted_at = NOW()
+		WHERE id = $1
+		RETURNING id, alumni_id, nama_perusahaan, posisi_jabatan, bidang_industri, lokasi_kerja, gaji_range, tanggal_mulai_kerja, tanggal_selesai_kerja, status_pekerjaan, deskripsi_pekerjaan, created_at, updated_at, deleted_at
+	`
+
+	err := db.QueryRow(query, id).Scan(
+		&pekerjaan.ID,
+		&pekerjaan.AlumniID,
+		&pekerjaan.NamaPerusahaan,
+		&pekerjaan.PosisiJabatan,
+		&pekerjaan.BidangIndustri,
+		&pekerjaan.LokasiKerja,
+		&pekerjaan.GajiRange,
+		&pekerjaan.TanggalMulaiKerja,
+		&pekerjaan.TanggalSelesaiKerja,
+		&pekerjaan.StatusPekerjaan,
+		&pekerjaan.DeskripsiPekerjaan,
+		&pekerjaan.CreatedAt,
+		&pekerjaan.UpdatedAt,
+        // Tambahkan DeletedAt di sini
+		&pekerjaan.DeletedAt,
+	)
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return models.Pekerjaan{}, sql.ErrNoRows
+		}
+		return models.Pekerjaan{}, err
+	}
+
+	return pekerjaan, nil
+}

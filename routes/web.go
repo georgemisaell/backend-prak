@@ -46,7 +46,7 @@ func SetupRoutes(app *fiber.App, db *sql.DB) {
 	// DELETE /alumni/:id
 	alumniGroup.Delete("/:id", middleware.AdminOnly(), func(c *fiber.Ctx) error {
 		id := c.Params("id")
-		return services.DeleteAlumniService(c, db, id)
+		return services.SoftDeleteAlumniService(c, db, id)
 	})
 
 
@@ -73,7 +73,7 @@ func SetupRoutes(app *fiber.App, db *sql.DB) {
 	// DELETE /pekerjaan/:id
 	pekerjaanGroup.Delete("/:id", middleware.AdminOnly(), func(c *fiber.Ctx) error {
 		id := c.Params("id")
-		return services.DeletePekerjaanService(c, db, id)
+		return services.SoftDeletePekerjaanService(c, db, id)
 	})
 }
 

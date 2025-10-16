@@ -152,7 +152,7 @@ func UpdatePekerjaanService(c *fiber.Ctx, db *sql.DB, id string) error {
 	return c.Status(fiber.StatusOK).JSON(UpdatedPekerjaan)
 }
 
-func DeletePekerjaanService(c *fiber.Ctx, db *sql.DB, id string) error {
+func SoftDeletePekerjaanService(c *fiber.Ctx, db *sql.DB, id string) error {
 	username := c.Locals("username").(string) 
     pekerjaanID, err := strconv.Atoi(id) 
     if err != nil { 
@@ -170,7 +170,7 @@ func DeletePekerjaanService(c *fiber.Ctx, db *sql.DB, id string) error {
 		})
 	}
 
-	DeletedPekerjaan, err := repository.DeletePekerjaan(db, pekerjaan , id)
+	DeletedPekerjaan, err := repository.SoftDeletePekerjaan(db, pekerjaan , id)
 	if err == sql.ErrNoRows {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"pesan": "data pekerjaan dengan ID " + id + " tidak ditemukan",

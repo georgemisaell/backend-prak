@@ -180,3 +180,39 @@ func DeleteAlumni(db *sql.DB, id string) (models.Alumni, error) {
 
     return alumni, err
 }
+
+func SoftDeleteAlumni(db *sql.DB, id string) (models.Alumni, error) {
+	var alumni models.Alumni
+
+	query := `
+		UPDATE alumni
+		SET deleted_at = NOW()
+		WHERE id = $1
+		RETURNING id, nim, nama, jurusan, angkatan, tahun_lulus, email, no_telepon, alamat, deleted_at, created_at, updated_at
+	`
+
+	err := db.QueryRow(query, id).Scan(
+		&alumni.ID,
+		&alumni.NIM,
+		&alumni.Nama,
+		&alumni.Jurusan,
+		&alumni.Angkatan,
+		&alumni.TahunLulus,
+		&alumni.Email,
+		&alumni.NoTelepon,
+		&alumni.Alamat,
+        
+		&alumni.DeletedAt,
+		&alumni.CreatedAt,
+		&alumni.UpdatedAt,
+	)
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return models.Alumni{}, sql.ErrNoRows
+		}
+		return models.Alumni{}, err
+	}
+
+	return alumni, nil
+}
