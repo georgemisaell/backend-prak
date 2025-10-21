@@ -10,7 +10,7 @@ import (
 
 func ConnectDB() *sql.DB{
 
-	dsn := os.Getenv("DB_DSN")
+	dsn := os.Getenv("POSGRES_URI")
 
 	// Koneksi database
 	db, err := sql.Open("postgres", dsn)

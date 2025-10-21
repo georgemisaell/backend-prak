@@ -8,15 +8,16 @@ import (
 	"latihan_uts_2/utils"
 
 	"github.com/gofiber/fiber/v2"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func SetupRoutes(app *fiber.App, db *sql.DB) {
+func SetupRoutes(app *fiber.App, postgresDB *sql.DB, mongoDB *mongo.Client) {
 	api := app.Group("/api")
 	 
     // Public routes (tidak perlu login)
 	api.Group("") 
 	api.Post("/login", func(c *fiber.Ctx) error {
-		return login(c, db) 
+		return login(c, postgresDB) 
 	})
 
 	// Protected routes (perlu login) 
@@ -27,72 +28,72 @@ func SetupRoutes(app *fiber.App, db *sql.DB) {
 	alumniGroup := protected.Group("/alumni")
 	// GET /alumni
 	alumniGroup.Get("/", func(c *fiber.Ctx) error {
-		return services.GetAllAlumniService(c, db)
+		return services.GetAllAlumniService(c, postgresDB)
 	})
 	// GET /alumni/:id
 	alumniGroup.Get("/:id", func(c *fiber.Ctx) error {
 		id := c.Params("id")
-		return services.GetAlumniByIDService(c, db, id)
+		return services.GetAlumniByIDService(c, postgresDB, id)
 	})
 	// POST /alumni
 	alumniGroup.Post("/", middleware.AdminOnly(), func(c *fiber.Ctx) error {
-		return services.CreateAlumniService(c, db)
+		return services.CreateAlumniService(c, postgresDB)
 	})
 	// PUT /alumni/:id
 	alumniGroup.Put("/:id", middleware.AdminOnly(),func(c *fiber.Ctx) error {
 		id := c.Params("id")
-		return services.UpdateAlumniService(c, db, id)
+		return services.UpdateAlumniService(c, postgresDB, id)
 	})
 	// DELETE /alumni/:id
 	alumniGroup.Delete("/:id", middleware.AdminOnly(), func(c *fiber.Ctx) error {
 		id := c.Params("id")
-		return services.SoftDeleteAlumniService(c, db, id)
+		return services.SoftDeleteAlumniService(c, postgresDB, id)
 	})
 
 	// --- Grup Rute Pekerjaan ---
 	pekerjaanGroup := protected.Group("/pekerjaan") 
 	// GET /pekerjaan
 	pekerjaanGroup.Get("/", func(c *fiber.Ctx) error {
-		return services.GetAllPekerjaanService(c, db)
+		return services.GetAllPekerjaanService(c, postgresDB)
 	})
 	// GET /pekerjaan/:id
 	pekerjaanGroup.Get("/:id", func(c *fiber.Ctx) error {
 		id := c.Params("id")
-		return services.GetPekerjaanByIDService(c, db, id)
+		return services.GetPekerjaanByIDService(c, postgresDB, id)
 	})
 	// POST /pekerjaan
 	pekerjaanGroup.Post("/", middleware.AdminOnly(), func(c *fiber.Ctx) error {
-		return services.CreatePekerjaanService(c, db)
+		return services.CreatePekerjaanService(c, postgresDB)
 	})
 	// PUT /pekerjaan/:id
 	pekerjaanGroup.Put("/:id", middleware.AdminOnly(), func(c *fiber.Ctx) error {
 		id := c.Params("id")
-		return services.UpdatePekerjaanService(c, db, id)
+		return services.UpdatePekerjaanService(c, postgresDB, id)
 	})
 	// DELETE /pekerjaan/:id (SoftDelete)
 	pekerjaanGroup.Delete("/:id", middleware.AdminOnly(), func(c *fiber.Ctx) error {
 		id := c.Params("id")
-		return services.SoftDeletePekerjaanService(c, db, id)
+		return services.SoftDeletePekerjaanService(c, postgresDB, id)
 	})
 
 	// --- Trash ---
 	trashed := protected.Group("/trash")
     trashed.Get("/", func(c *fiber.Ctx) error {
-		return services.GetAllTrashService(c, db)
+		return services.GetAllTrashService(c, postgresDB)
 	})
 
 	trashed.Put("/:id", middleware.AdminOnly(), func(c *fiber.Ctx) error {
 		id := c.Params("id")
-		return services.UpdateTrashService(c, db, id)
+		return services.UpdateTrashService(c, postgresDB, id)
 	})
 
 	trashed.Delete("/:id", middleware.AdminOnly(), func(c *fiber.Ctx) error {
 		id := c.Params("id")
-		return services.DeleteTrashService(c, db, id)
+		return services.DeleteTrashService(c, postgresDB, id)
 	})
 }
 
-func login(c *fiber.Ctx, db *sql.DB) error {
+func login(c *fiber.Ctx, postgresDB *sql.DB) error {
 	 var req models.LoginRequest 
 	 if err := c.BodyParser(&req); err != nil { 
         return c.Status(400).JSON(fiber.Map{ 
@@ -110,7 +111,7 @@ func login(c *fiber.Ctx, db *sql.DB) error {
 	   // Cari user di database 
     var user models.User 
     var passwordHash string 
-    err := db.QueryRow(` 
+    err := postgresDB.QueryRow(` 
         SELECT id, username, email, password_hash, role, created_at 
         FROM users  
         WHERE username = $1 OR email = $1 
