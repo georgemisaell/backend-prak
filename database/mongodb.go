@@ -2,39 +2,41 @@ package database
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"os"
 	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
-func ConnectMongoDB() *mongo.Client {
+func ConnectMongoDB() *mongo.Database {
 
 	mongoURI := os.Getenv("MONGO_URI")
-	if mongoURI == "" {
-		log.Fatal("MONGO_URI environment variable tidak disetel.")
-	}
+    if mongoURI == "" {
+        mongoURI = "mongodb://localhost:27017"
+        log.Println("Peringatan: MONGO_URI tidak disetel. Menggunakan default:", mongoURI)
+    }
 
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 
 	// Koneksi database
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI(mongoURI))
-	if err != nil {
-		log.Fatalf("Gagal koneksi ke MongoDB: %v", err)
-	}
+    clientOptions := options.Client().ApplyURI(mongoURI)
+    // Membuat konteks dengan batas waktu
+    ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+    defer cancel()
 
-	// Tes Koneksi (Ping)
-	pingCtx, pingCancel := context.WithTimeout(context.Background(), 2*time.Second)
-	defer pingCancel()
+    client, err := mongo.Connect(ctx, clientOptions)
+    if err != nil {
+        log.Fatalf("Koneksi ke MongoDB gagal: %v", err)
+    }
 
-	if err = client.Ping(pingCtx, readpref.Primary()); err != nil {
-		// Log error dan keluar jika ping gagal
-		log.Fatalf("Gagal ping MongoDB: %v", err)
-	}
+    err = client.Ping(ctx, nil)
+    if err != nil {
+        log.Fatalf("Ping ke MongoDB gagal: %v", err)
+    }
 
-	log.Println("Sukses koneksi ke MongoDB!")
-	return client
+    fmt.Println("Berhasil terhubung ke database MongoDB!")
+    return client.Database("alumnipedia")
 }
