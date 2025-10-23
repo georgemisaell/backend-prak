@@ -2,6 +2,7 @@ package routes
 
 import (
 	"latihan_uts_2/app/services"
+	"latihan_uts_2/middleware"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -27,12 +28,12 @@ func SetupPekerjaanRoutes(pekerjaanRoutes fiber.Router, pekerjaanService service
 	})
 
 	// PUT /api1/v1/pekerjaan/:id -> Update pekerjaan
-	pekerjaanRoutes.Put("/:id", func(c *fiber.Ctx) error {
+	pekerjaanRoutes.Put("/:id", middleware.AdminOnly(), func(c *fiber.Ctx) error {
 		return pekerjaanService.UpdatePekerjaan(c)
 	})
 
 	// DELETE /api1/v1/pekerjaan/:id -> Soft delete pekerjaan
-	pekerjaanRoutes.Delete("/:id", func(c *fiber.Ctx) error {
+	pekerjaanRoutes.Delete("/:id", middleware.AdminOnly(), func(c *fiber.Ctx) error {
 		return pekerjaanService.SoftDeletePekerjaan(c)
 	})
 }
