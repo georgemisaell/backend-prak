@@ -36,6 +36,12 @@ func SetupRoutes(app *fiber.App, mongoDB *mongo.Database, postgreSQL *sql.DB) {
 	pekerjaanRoutes := protected.Group("/pekerjaan")
 	SetupPekerjaanRoutes(pekerjaanRoutes, pekerjaanService)
 
+	// --- Grup Rute Upload File ---
+    fileRepo := repository.NewFileRepository(mongoDB) 
+    fileService := services.NewFileService(fileRepo, "./uploads") 
+    filesRoutes := protected.Group("/files")
+	SetFileUploadRoutes(filesRoutes, fileService)
+
 	// --- Grup Rute Trash ---
 	trashed := protected.Group("/trash")
     trashed.Get("/", func(c *fiber.Ctx) error {

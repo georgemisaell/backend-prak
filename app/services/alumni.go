@@ -32,20 +32,18 @@ func (s *AlumniService) CreateAlumni(ctx context.Context, alumni *models.Alumni)
     alumni.CreatedAt = now
     alumni.UpdatedAt = now
 
-    // Contoh Logika Bisnis / Validasi Data
     if alumni.Nama == "" {
         return nil, errors.New("nama tidak boleh kosong")
     }	
     if alumni.Email == "" || alumni.Jurusan <= "" {
         return nil, errors.New("email dan jurusan harus diisi dengan benar")
     }
-    // Jika semua validasi lolos, panggil repository
+
     return s.repo.CreateAlumni(ctx, alumni)
 }
 
 // GetUserByID mengambil pengguna dan menangani kasus jika tidak ditemukan.
 func (s *AlumniService) GetAlumniByID(ctx context.Context, id string) (*models.Alumni, error) {
-    // Logika Bisnis: Cek apakah ID valid sebelum ke DB (sudah dilakukan di repo, tapi bisa ditambahkan di sini juga)
     alumni, err := s.repo.FindAlumniByID(ctx, id)
     if err != nil {
         return nil, err
@@ -58,7 +56,6 @@ func (s *AlumniService) GetAlumniByID(ctx context.Context, id string) (*models.A
 
 // GetAllUsers mengambil semua pengguna.
 func (s *AlumniService) GetAllAlumni(ctx context.Context) ([]models.Alumni, error) {
-    // Logika Bisnis: Bisa menambahkan pagination atau filter di sini
     alumni, err := s.repo.FindAllAlumni(ctx)
     if err != nil {
         return nil, err

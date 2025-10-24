@@ -14,7 +14,7 @@ func main() {
 	// Menghubungkan .env
 	config.Config()
 
-	// database mongodb
+	// database postgresql
 	postgreSQL := database.ConnectDB()
 
 	// database mongodb

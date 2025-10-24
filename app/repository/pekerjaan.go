@@ -18,12 +18,12 @@ type IPekerjaanRepository interface {
 	SoftDeletePekerjaan(ctx context.Context, id string) error
 }
 
-// PekerjaanRepository implementasi IPekerjaanRepository menggunakan MongoDB.
+// PekerjaanRepository implementasi IPekerjaanRepository 
 type PekerjaanRepository struct {
 	collection *mongo.Collection
 }
 
-// NewPekerjaanRepository membuat instance baru dari PekerjaanRepository dan mengaitkannya dengan koleksi MongoDB.
+// NewPekerjaanRepository 
 func NewPekerjaanRepository(db *mongo.Database) IPekerjaanRepository {
 	return &PekerjaanRepository{
 		collection: db.Collection("pekerjaan"),
@@ -46,7 +46,6 @@ func (r *PekerjaanRepository) CreatePekerjaan(ctx context.Context, pekerjaan *mo
 
 // FindPekerjaanByID mengambil pengguna berdasarkan ID string.
 func (r *PekerjaanRepository) FindPekerjaanByID(ctx context.Context, id string) (*models.Pekerjaan, error) {
-	// Konversi ID string menjadi primitive.ObjectID
 	objID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, err // ID tidak valid
@@ -71,7 +70,7 @@ func (r *PekerjaanRepository) FindAllPekerjaan(ctx context.Context) ([]models.Pe
 	if err != nil {
 		return nil, err
 	}
-	defer cursor.Close(ctx) // Pastikan kursor ditutup
+	defer cursor.Close(ctx)
 
 	var pekerjaan []models.Pekerjaan
 	if err = cursor.All(ctx, &pekerjaan); err != nil {
@@ -82,17 +81,13 @@ func (r *PekerjaanRepository) FindAllPekerjaan(ctx context.Context) ([]models.Pe
 
 // UpdatePekerjaan memperbarui dokumen pekerjaan di MongoDB.
 func (r *PekerjaanRepository) UpdatePekerjaan(ctx context.Context, id string, pekerjaan *models.Pekerjaan) (*models.Pekerjaan, error) {
-	// Konversi ID string menjadi primitive.ObjectID
 	objID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, err
 	}
 
-	// Setel UpdatedAt di layer Service, bukan di sini.
-	// Kita buat filter dan update operation.
 	filter := bson.M{"_id": objID, "deleted_at": primitive.DateTime(time.Time{}.UnixMilli())}
 	
-	// Data yang akan di-set
 	update := bson.M{"$set": pekerjaan}
 
 	// Lakukan update
@@ -101,11 +96,10 @@ func (r *PekerjaanRepository) UpdatePekerjaan(ctx context.Context, id string, pe
 		return nil, err
 	}
 
-	// Dapatkan kembali data yang diperbarui untuk dikembalikan ke Service/Controller
 	var updatedPekerjaan models.Pekerjaan
 	err = r.collection.FindOne(ctx, filter).Decode(&updatedPekerjaan)
 	if err != nil {
-		return nil, err // Mungkin terjadi jika dokumen hilang setelah update (sangat jarang)
+		return nil, err
 	}
 
 	return &updatedPekerjaan, nil
@@ -113,20 +107,18 @@ func (r *PekerjaanRepository) UpdatePekerjaan(ctx context.Context, id string, pe
 
 // SoftDeletePekerjaan menetapkan nilai DeletedAt pada dokumen yang sesuai dengan ID.
 func (r *PekerjaanRepository) SoftDeletePekerjaan(ctx context.Context, id string) error {
-	// Konversi ID string menjadi primitive.ObjectID
 	objID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return err
 	}
 
-	// Setel DeletedAt menjadi waktu saat ini (soft delete)
 	update := bson.M{
 		"$set": bson.M{
-			"deleted_at": time.Now(), // time.Now() akan diubah MongoDB menjadi tipe BSON Date
+			"deleted_at": time.Now(),
 		},
 	}
 
-	filter := bson.M{"_id": objID, "deleted_at": primitive.DateTime(time.Time{}.UnixMilli())} // Hanya hapus yang belum dihapus
+	filter := bson.M{"_id": objID, "deleted_at": primitive.DateTime(time.Time{}.UnixMilli())}
 
 	result, err := r.collection.UpdateOne(ctx, filter, update)
 	if err != nil {
@@ -134,7 +126,7 @@ func (r *PekerjaanRepository) SoftDeletePekerjaan(ctx context.Context, id string
 	}
 
 	if result.ModifiedCount == 0 {
-		return mongo.ErrNoDocuments // Tidak ada dokumen yang dimodifikasi, mungkin ID tidak ditemukan atau sudah dihapus
+		return mongo.ErrNoDocuments
 	}
 
 	return nil
