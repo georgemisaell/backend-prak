@@ -43,7 +43,6 @@ func GetAllTrashService(c *fiber.Ctx, db *sql.DB) error {
 			})
 		}
 
-		// Buat response pakai model 
     response := models.TrashResponse{ 
         Data: trash,
         Meta: models.MetaInfo{ 
@@ -87,7 +86,6 @@ func UpdateTrashService(c *fiber.Ctx, db *sql.DB, id string) error {
 		})
 	}
 
-    // 4. Jika Sukses (data ditemukan dan diperbarui)
 	return c.Status(fiber.StatusOK).JSON(UpdatedTrash)
 }
 

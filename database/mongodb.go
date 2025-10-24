@@ -19,8 +19,6 @@ func ConnectMongoDB() *mongo.Database {
         log.Println("Peringatan: MONGO_URI tidak disetel. Menggunakan default:", mongoURI)
     }
 
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
-
 	// Koneksi database
     clientOptions := options.Client().ApplyURI(mongoURI)
     // Membuat konteks dengan batas waktu
