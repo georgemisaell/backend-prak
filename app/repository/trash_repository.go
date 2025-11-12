@@ -3,7 +3,7 @@ package repository
 import (
 	"database/sql"
 	"fmt"
-	"latihan_uts_2/app/models"
+	"latihan_uts/app/models"
 )
 
 func GetAllTrash(search, sortBy, order string, limit, offset int, db *sql.DB) ([]models.Trash, error) {

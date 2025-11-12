@@ -2,8 +2,8 @@ package services
 
 import (
 	"context"
-	"latihan_uts_2/app/models"
-	"latihan_uts_2/app/repository"
+	"latihan_uts/app/models"
+	"latihan_uts/app/repository"
 	"time"
 
 	"github.com/gofiber/fiber/v2"

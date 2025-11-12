@@ -1,14 +1,22 @@
 package main
 
 import (
-	"latihan_uts_2/config"
-	"latihan_uts_2/database"
-	"latihan_uts_2/routes"
+	"latihan_uts/config"
+	"latihan_uts/database"
+	_ "latihan_uts/docs"
+	"latihan_uts/routes"
 	"log"
 
 	"github.com/gofiber/fiber/v2"
+	fiberSwagger "github.com/swaggo/fiber-swagger"
 )
 
+// @title Manajemen Alumni
+// @version 1.0
+// @description API untuk mengelola data dengan MongoDB menggunakan Clean Architecture
+// @host 127.0.0.1:3000
+// @BasePath /api
+// @schemes http
 func main() {
 	
 	// Menghubungkan .env
@@ -28,6 +36,9 @@ func main() {
 			})
 		},
 	})
+
+	// Swagger UI
+	app.Get("/swagger/*", fiberSwagger.WrapHandler)
 
 	// routes
 	routes.SetupRoutes(app, mongoDB, postgreSQL)

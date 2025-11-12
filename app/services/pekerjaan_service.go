@@ -3,8 +3,8 @@ package services
 import (
 	"database/sql"
 	"fmt"
-	"latihan_uts_2/app/models"
-	"latihan_uts_2/app/repository"
+	"latihan_uts/app/models"
+	"latihan_uts/app/repository"
 	"log"
 	"strconv"
 	"strings"

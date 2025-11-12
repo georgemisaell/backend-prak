@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"latihan_uts_2/app/models"
+	"latihan_uts/app/models"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"

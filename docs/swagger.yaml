@@ -1,0 +1,68 @@
+basePath: /api
+definitions:
+  models.Alumni:
+    properties:
+      alamat:
+        type: string
+      angkatan:
+        type: integer
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      email:
+        type: string
+      id:
+        type: string
+      jurusan:
+        type: string
+      nama:
+        type: string
+      nim:
+        type: string
+      no_telepon:
+        type: string
+      tahun_lulus:
+        type: integer
+      updated_at:
+        type: string
+    type: object
+host: 127.0.0.1:3000
+info:
+  contact: {}
+  description: API untuk mengelola data dengan MongoDB menggunakan Clean Architecture
+  title: Manajemen Alumni
+  version: "1.0"
+paths:
+  /alumni:
+    get:
+      responses: {}
+      summary: Dapatkan semua alumni
+      tags:
+      - Users - Alumni
+    post:
+      consumes:
+      - application/json
+      description: Menambahkan alumni ke database
+      parameters:
+      - description: Data Alumni
+        in: body
+        name: alumni
+        required: true
+        schema:
+          $ref: '#/definitions/models.Alumni'
+      produces:
+      - application/json
+      responses: {}
+      summary: Membuat data alumni baru
+      tags:
+      - alumni
+  /alumni/{id}:
+    get:
+      responses: {}
+      summary: Dapatkan alumni berdasarkan id
+      tags:
+      - Users - Alumni
+schemes:
+- http
+swagger: "2.0"

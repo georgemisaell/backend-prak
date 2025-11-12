@@ -2,8 +2,8 @@ package routes
 
 import (
 	"database/sql"
-	"latihan_uts_2/app/models"
-	"latihan_uts_2/utils"
+	"latihan_uts/app/models"
+	"latihan_uts/utils"
 
 	"github.com/gofiber/fiber/v2"
 )

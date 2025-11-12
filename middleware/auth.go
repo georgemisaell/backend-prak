@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"latihan_uts_2/utils"
+	"latihan_uts/utils"
 	"strings"
 
 	"github.com/gofiber/fiber/v2"

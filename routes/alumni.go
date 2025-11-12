@@ -2,8 +2,8 @@ package routes
 
 import (
 	"context"
-	"latihan_uts_2/app/models"
-	"latihan_uts_2/app/services"
+	"latihan_uts/app/models"
+	"latihan_uts/app/services"
 	"time"
 
 	"github.com/gofiber/fiber/v2"

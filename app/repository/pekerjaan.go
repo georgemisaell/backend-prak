@@ -2,7 +2,7 @@ package repository
 
 import (
 	"context"
-	"latihan_uts_2/app/models"
+	"latihan_uts/app/models"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"

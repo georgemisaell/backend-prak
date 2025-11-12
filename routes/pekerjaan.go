@@ -1,8 +1,8 @@
 package routes
 
 import (
-	"latihan_uts_2/app/services"
-	"latihan_uts_2/middleware"
+	"latihan_uts/app/services"
+	"latihan_uts/middleware"
 
 	"github.com/gofiber/fiber/v2"
 )

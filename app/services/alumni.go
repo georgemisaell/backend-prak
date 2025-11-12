@@ -3,8 +3,8 @@ package services
 import (
 	"context"
 	"errors"
-	"latihan_uts_2/app/models"
-	"latihan_uts_2/app/repository"
+	"latihan_uts/app/models"
+	"latihan_uts/app/repository"
 	"time"
 )
 
@@ -26,6 +26,13 @@ func NewAlumniService(repo repository.IAlumniRepository) IAlumniService {
 }
 
 // CreateUser memvalidasi data dan meneruskannya ke repository.
+// @Summary      Membuat data alumni baru
+// @Description  Menambahkan alumni ke database
+// @Tags         alumni
+// @Accept       json
+// @Produce      json
+// @Param        alumni  body      models.Alumni  true  "Data Alumni"
+// @Router       /alumni [post]
 func (s *AlumniService) CreateAlumni(ctx context.Context, alumni *models.Alumni) (*models.Alumni, error) {
 
     now := time.Now()
@@ -43,6 +50,10 @@ func (s *AlumniService) CreateAlumni(ctx context.Context, alumni *models.Alumni)
 }
 
 // GetUserByID mengambil pengguna dan menangani kasus jika tidak ditemukan.
+// GetAlumniByID godoc
+// @Summary Dapatkan alumni berdasarkan id
+// @Tags Users - Alumni
+// @Router /alumni/{id} [get]
 func (s *AlumniService) GetAlumniByID(ctx context.Context, id string) (*models.Alumni, error) {
     alumni, err := s.repo.FindAlumniByID(ctx, id)
     if err != nil {
@@ -55,6 +66,10 @@ func (s *AlumniService) GetAlumniByID(ctx context.Context, id string) (*models.A
 }
 
 // GetAllUsers mengambil semua pengguna.
+// GetAllAlumni godoc
+// @Summary Dapatkan semua alumni
+// @Tags Users - Alumni
+// @Router /alumni [get]
 func (s *AlumniService) GetAllAlumni(ctx context.Context) ([]models.Alumni, error) {
     alumni, err := s.repo.FindAllAlumni(ctx)
     if err != nil {

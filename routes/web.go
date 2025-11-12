@@ -2,9 +2,9 @@ package routes
 
 import (
 	"database/sql"
-	"latihan_uts_2/app/repository"
-	"latihan_uts_2/app/services"
-	"latihan_uts_2/middleware"
+	"latihan_uts/app/repository"
+	"latihan_uts/app/services"
+	"latihan_uts/middleware"
 
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/mongo"

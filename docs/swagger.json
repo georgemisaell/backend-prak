@@ -1,0 +1,102 @@
+{
+    "schemes": [
+        "http"
+    ],
+    "swagger": "2.0",
+    "info": {
+        "description": "API untuk mengelola data dengan MongoDB menggunakan Clean Architecture",
+        "title": "Manajemen Alumni",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "127.0.0.1:3000",
+    "basePath": "/api",
+    "paths": {
+        "/alumni": {
+            "get": {
+                "tags": [
+                    "Users - Alumni"
+                ],
+                "summary": "Dapatkan semua alumni",
+                "responses": {}
+            },
+            "post": {
+                "description": "Menambahkan alumni ke database",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "alumni"
+                ],
+                "summary": "Membuat data alumni baru",
+                "parameters": [
+                    {
+                        "description": "Data Alumni",
+                        "name": "alumni",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Alumni"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/alumni/{id}": {
+            "get": {
+                "tags": [
+                    "Users - Alumni"
+                ],
+                "summary": "Dapatkan alumni berdasarkan id",
+                "responses": {}
+            }
+        }
+    },
+    "definitions": {
+        "models.Alumni": {
+            "type": "object",
+            "properties": {
+                "alamat": {
+                    "type": "string"
+                },
+                "angkatan": {
+                    "type": "integer"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "jurusan": {
+                    "type": "string"
+                },
+                "nama": {
+                    "type": "string"
+                },
+                "nim": {
+                    "type": "string"
+                },
+                "no_telepon": {
+                    "type": "string"
+                },
+                "tahun_lulus": {
+                    "type": "integer"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
