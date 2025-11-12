@@ -57,6 +57,49 @@ const docTemplate = `{
                 "summary": "Dapatkan alumni berdasarkan id",
                 "responses": {}
             }
+        },
+        "/pekerjaan": {
+            "get": {
+                "tags": [
+                    "Users - Pekerjaan"
+                ],
+                "summary": "Dapatkan semua pekerjaan",
+                "responses": {}
+            },
+            "post": {
+                "description": "Menambahkan pekerjaan ke database",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "pekerjaan"
+                ],
+                "summary": "Membuat data pekerjaan baru",
+                "parameters": [
+                    {
+                        "description": "Data Pekerjaan",
+                        "name": "pekerjaan",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Pekerjaan"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/pekerjaan/{id}": {
+            "get": {
+                "tags": [
+                    "Users - Pekerjaan"
+                ],
+                "summary": "Dapatkan pekerjaan berdasarkan id",
+                "responses": {}
+            }
         }
     },
     "definitions": {
@@ -95,6 +138,53 @@ const docTemplate = `{
                 },
                 "tahun_lulus": {
                     "type": "integer"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.Pekerjaan": {
+            "type": "object",
+            "properties": {
+                "alumni_id": {
+                    "type": "string"
+                },
+                "bidang_industri": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "type": "string"
+                },
+                "deskripsi_pekerjaan": {
+                    "type": "string"
+                },
+                "gaji_range": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "lokasi_kerja": {
+                    "type": "string"
+                },
+                "nama_perusahaan": {
+                    "type": "string"
+                },
+                "posisi_jabatan": {
+                    "type": "string"
+                },
+                "status_pekerjaan": {
+                    "type": "string"
+                },
+                "tanggal_mulai_kerja": {
+                    "type": "string"
+                },
+                "tanggal_selesai_kerja": {
+                    "type": "string"
                 },
                 "updated_at": {
                     "type": "string"

@@ -30,7 +30,14 @@ func NewPekerjaanService(repo repository.IPekerjaanRepository) IPekerjaanService
     return &PekerjaanService{repo: repo}
 }
 
-// CreateUser memvalidasi data dan meneruskannya ke repository.
+// CreatePekerjaan memvalidasi data dan meneruskannya ke repository.
+// @Summary      Membuat data pekerjaan baru
+// @Description  Menambahkan pekerjaan ke database
+// @Tags         pekerjaan
+// @Accept       json
+// @Produce      json
+// @Param        pekerjaan  body      models.Pekerjaan  true  "Data Pekerjaan"
+// @Router       /pekerjaan [post]
 func (s *PekerjaanService) CreatePekerjaan(c *fiber.Ctx) error {
 	
 	pekerjaan := new(models.Pekerjaan)
@@ -72,7 +79,11 @@ func (s *PekerjaanService) CreatePekerjaan(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusCreated).JSON(createdPekerjaan)
 }
 
-// GetAllPekerjaan mengambil semua pengguna.
+// GetAllPekerjaan mengambil semua pekerjaan.
+// GetAllPekerjaan godoc
+// @Summary Dapatkan semua pekerjaan
+// @Tags Users - Pekerjaan
+// @Router /pekerjaan [get]
 func (s *PekerjaanService) GetAllPekerjaan(c *fiber.Ctx) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
@@ -88,7 +99,12 @@ func (s *PekerjaanService) GetAllPekerjaan(c *fiber.Ctx) error {
 	return c.JSON(pekerjaan)
 }
 
-// GetPekerjaanByID mengambil pengguna
+// GetPekerjaanByID mengambil pekerjaan
+// GetPekerjaanByID mengambil pekerjaan dan menangani kasus jika tidak ditemukan.
+// GetPekerjaanByID godoc
+// @Summary Dapatkan pekerjaan berdasarkan id
+// @Tags Users - Pekerjaan
+// @Router /pekerjaan/{id} [get]
 func (s *PekerjaanService) GetPekerjaanByID(c *fiber.Ctx) error {
 	id := c.Params("id")
 

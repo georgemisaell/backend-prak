@@ -27,6 +27,37 @@ definitions:
       updated_at:
         type: string
     type: object
+  models.Pekerjaan:
+    properties:
+      alumni_id:
+        type: string
+      bidang_industri:
+        type: string
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      deskripsi_pekerjaan:
+        type: string
+      gaji_range:
+        type: string
+      id:
+        type: string
+      lokasi_kerja:
+        type: string
+      nama_perusahaan:
+        type: string
+      posisi_jabatan:
+        type: string
+      status_pekerjaan:
+        type: string
+      tanggal_mulai_kerja:
+        type: string
+      tanggal_selesai_kerja:
+        type: string
+      updated_at:
+        type: string
+    type: object
 host: 127.0.0.1:3000
 info:
   contact: {}
@@ -63,6 +94,35 @@ paths:
       summary: Dapatkan alumni berdasarkan id
       tags:
       - Users - Alumni
+  /pekerjaan:
+    get:
+      responses: {}
+      summary: Dapatkan semua pekerjaan
+      tags:
+      - Users - Pekerjaan
+    post:
+      consumes:
+      - application/json
+      description: Menambahkan pekerjaan ke database
+      parameters:
+      - description: Data Pekerjaan
+        in: body
+        name: pekerjaan
+        required: true
+        schema:
+          $ref: '#/definitions/models.Pekerjaan'
+      produces:
+      - application/json
+      responses: {}
+      summary: Membuat data pekerjaan baru
+      tags:
+      - pekerjaan
+  /pekerjaan/{id}:
+    get:
+      responses: {}
+      summary: Dapatkan pekerjaan berdasarkan id
+      tags:
+      - Users - Pekerjaan
 schemes:
 - http
 swagger: "2.0"
